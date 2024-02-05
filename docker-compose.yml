@@ -12,7 +12,7 @@ services:
     volumes:
       - .:/opt/project
     environment:
-      - PATH=/root/.local/bin/poetry:$PATH
+      - PATH=/root/.local/bin:$PATH
     working_dir: /opt/project
     command: poetry run jupyter notebook
     restart: always
