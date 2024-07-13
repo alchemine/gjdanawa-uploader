@@ -1,16 +1,15 @@
-# syntax=docker/dockerfile:1
-FROM alchemine/base-cuda:11.8.0-cudnn8-runtime-ubuntu22.04
+# Use the Python base image
+ARG VARIANT="3.11-bullseye"
+FROM mcr.microsoft.com/devcontainers/python:0-${VARIANT}
 
-SHELL ["/bin/bash", "-ic"]
-WORKDIR /opt/project
+# Define the version of Poetry to install
+ARG POETRY_VERSION=1.8.3
+ENV POETRY_VIRTUALENVS_IN_PROJECT=false \
+    POETRY_NO_INTERACTION=true
 
-# copy poetry configurations
-COPY pyproject.toml poetry.lock /opt/project/
+# Create a Python virtual environment for Poetry and install it
+RUN pipx install poetry==${POETRY_VERSION}
 
-# install python environment
-RUN poetry env use python3.10 && \
-    poetry install --no-root
-
-# install jupyter notebook
-RUN poetry add notebook=6.5.6 jupyterthemes=0.20.0 && \
-    poetry run /opt/docker/context/utils/jupyter/apply_config.sh
+# Setup for bash
+RUN poetry completions bash >> /home/vscode/.bash_completion && \
+    echo "export PATH=.:$PATH" >> ~/.bashrc

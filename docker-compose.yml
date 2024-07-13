@@ -6,14 +6,12 @@ services:
       context: .
     hostname: "dev"
     ports:
-      - 10022:22
-      - 8501:8501
       - 8888:8888
     volumes:
-      - .:/opt/project
+      - .:/app
     environment:
       - PATH=/root/.local/bin:$PATH
-    working_dir: /opt/project
+    working_dir: /app
     command: poetry run jupyter notebook
     restart: always
     privileged: true
@@ -24,5 +22,5 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['0']
+              device_ids: ["0"]
               capabilities: [gpu]

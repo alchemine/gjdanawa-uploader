@@ -3,13 +3,8 @@
 {
   "name": "Existing Dockerfile",
   "build": {
-    "context": "${localEnv:BASE_CDE_PATH}",
-    "dockerfile": "${localEnv:BASE_CDE_PATH}/Dockerfile"
-  },
-
-  // Features to add to the dev container. More info: https://containers.dev/features.
-  "features": {
-    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+    "context": "..",
+    "dockerfile": "../Dockerfile"
   },
 
   // Configure tool-specific properties.
@@ -22,7 +17,8 @@
         "esbenp.prettier-vscode",
         "ms-python.black-formatter",
         "GitHub.copilot",
-        "donjayamanne.githistory"
+        "donjayamanne.githistory",
+        "eamodio.gitlens"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
@@ -30,24 +26,36 @@
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "notebook.formatOnSave.enabled": true,
+        "jupyter.notebookFileRoot": "${workspaceFolder}",
         "[python]": {
           "editor.formatOnSave": true,
           "editor.defaultFormatter": "ms-python.black-formatter"
-        }
+        },
+        "files.exclude": {
+          "**/__pycache__": true
+        },
+        "python.testing.pytestEnabled": true,
+        "python.testing.pytestArgs": ["-s", "-vv", "tests"]
       }
     }
   },
 
-  "mounts": ["source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind"]
+  "mounts": ["source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind"],
+  "workspaceMount": "source=${localWorkspaceFolder},target=/app,type=bind",
+  "workspaceFolder": "/app",
+
+  "containerEnv": {
+    "PYTHONPATH": "/app",
+    "OPENAI_API_KEY": "${localEnv:OPENAI_API_KEY}"
+  },
+
+  "postCreateCommand": "bash .devcontainer/postCreate.sh"
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
 
-  // Uncomment the next line to run commands after the container is created.
-  // "postCreateCommand": "cat /etc/os-release",
-
-  // Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
-  // "remoteUser": "devcontainer",
-
-  // "containerEnv": {}
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  // "features": {
+  //   "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  // },
 }
