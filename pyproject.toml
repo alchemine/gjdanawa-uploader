@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "base-project"
 version = "0.1.0"
-description = "app"
+description = "Base project environment"
 authors = ["alchemine <djyoon0223@gmail.com>"]
 readme = "README.md"
 packages = [{include = "base_project"}]
