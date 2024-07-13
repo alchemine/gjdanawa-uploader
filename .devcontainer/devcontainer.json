@@ -45,10 +45,9 @@
   "workspaceFolder": "/app",
 
   "containerEnv": {
-    "PYTHONPATH": "/app",
-    "OPENAI_API_KEY": "${localEnv:OPENAI_API_KEY}"
+    "PYTHONPATH": "/app"
   },
-
+  "runArgs": ["--env-file", ".env"],
   "postCreateCommand": "bash .devcontainer/postCreate.sh"
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.

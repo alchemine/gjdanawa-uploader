@@ -21,7 +21,7 @@
 ├── README.md
 ├── base_project
 │   ├── launch.py
-│   └── utils
+│   └── core
 │       ├── __init__.py
 │       ├── depth_logging.py
 │       ├── files.py
@@ -43,7 +43,7 @@
    - `Timer(name)`
 
    ```python
-   from base_project.utils import Timer
+   from base_project.core import Timer
 
    with Timer("Code1"):
        sleep(1)
@@ -59,7 +59,7 @@
    - `@T`
 
    ```python
-   from base_project.utils import Timer, T
+   from base_project.core import Timer, T
 
    @Timer("fn1")
    def fn1():
@@ -85,7 +85,7 @@
    - `@D`
 
    ```python
-   from base_project.utils import D
+   from base_project.core import D
 
 
    @D
