@@ -1,5 +1,11 @@
 import streamlit as st
 import pandas as pd
+from gjdanawa_uploader.utils.crawling import *
+
+
+def initialize_session():
+    st.session_state.id = ""
+    st.session_state.password = ""
 
 
 def create_property_input(key):
@@ -175,8 +181,36 @@ def main():
     # 로그인 정보 (사이드바)
     with st.sidebar:
         st.header("로그인 정보")
-        id_value = st.text_input("아이디")
-        pw_value = st.text_input("비밀번호", type="password")
+        id_value = st.text_input("아이디", value=st.session_state.id)
+        pw_value = st.text_input(
+            "비밀번호", value=st.session_state.password, type="password"
+        )
+
+        if st.session_state.id and st.session_state.password:
+            pass
+        elif id_value and pw_value:
+            with st.spinner("로그인 중..."):
+                try:
+                    driver = get_chrome_driver()
+
+                    url = "https://gjdanawa.com"
+                    load_url(driver, url)
+
+                    id_selector = "#member_id"
+                    send_keys(driver, id_selector, id_value)
+
+                    pw_selector = "#pass"
+                    send_keys(driver, pw_selector, pw_value, enter=True)
+                    click_alert(driver, action="accept")
+                    st.session_state.driver = driver
+                    st.session_state.id = id_value
+                    st.session_state.password = pw_value
+                except:
+                    st.error("로그인에 실패했습니다. 다시 시도해주세요.")
+                    st.stop()
+        else:
+            st.stop()
+        st.success("로그인 성공!")
 
     # 매물 정보 입력
     st.header("매물 정보")
@@ -207,6 +241,10 @@ def main():
         # DataFrame으로 표시
         df = pd.DataFrame(properties)
         st.dataframe(df)
+
+
+if "initialize_session" not in st.session_state:
+    st.session_state.initialize_session = initialize_session()
 
 
 if __name__ == "__main__":

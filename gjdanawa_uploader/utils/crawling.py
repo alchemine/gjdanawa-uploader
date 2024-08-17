@@ -513,7 +513,7 @@ def get_option_values(
 
 
 if __name__ == "__main__":
-    driver = get_chrome_driver()
-    driver.get("https://www.google.com")
-    page_source = driver.page_source
+    DRIVER = get_chrome_driver()
+    DRIVER.get("https://www.google.com")
+    page_source = DRIVER.page_source
     print(page_source)
