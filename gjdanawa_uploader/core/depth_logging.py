@@ -7,7 +7,7 @@ import contextlib
 from collections import defaultdict
 from functools import wraps
 
-from base_project.core.timer import Timer
+from gjdanawa_uploader.core.timer import Timer
 
 
 class DepthManager(contextlib.ContextDecorator):

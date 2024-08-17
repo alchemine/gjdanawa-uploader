@@ -6,8 +6,12 @@ Commonly used functions and classes are here.
 from itertools import starmap
 from datetime import datetime
 
+import yaml
 import numpy as np
-import tabulate
+from tabulate import tabulate
+
+# import tabulate
+from easydict import EasyDict
 from dask import delayed, compute
 
 
@@ -98,3 +102,34 @@ class MetaSingleton(type):
         if cls not in cls._instances:
             cls._instances[cls] = super(MetaSingleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
+
+
+class SingletonManager:
+    """Singleton manager
+    This class assures that only one instance is created.
+
+    Attributes:
+        instance: Singleton instance
+    """
+
+    def __new__(cls):
+        if not hasattr(cls, "instance"):
+            cls.instances = {}
+        return super().__new__(cls)
+
+    def get_instance(self, key):
+        """Get or create an instance for the given key"""
+        if key not in self.instances:
+            self.instances[key] = object()  # 실제 인스턴스 생성 로직으로 대체해야 함
+        return self.instances[key]
+
+    def set_instance(self, key, instance):
+        """Set an instance for the given key"""
+        self.instances[key] = instance
+
+    def has_instance(self, key):
+        """Check if an instance exists for the given key"""
+        return key in self.instances
+
+
+SINGLETON_MANAGER = SingletonManager()

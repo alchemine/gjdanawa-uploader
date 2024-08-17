@@ -1,6 +1,6 @@
 # Use the Python base image
 ARG VARIANT="3.11-bullseye"
-FROM mcr.microsoft.com/devcontainers/python:0-${VARIANT}
+FROM --platform=linux/amd64 mcr.microsoft.com/devcontainers/python:0-${VARIANT}
 
 # Define the version of Poetry to install
 ARG POETRY_VERSION=1.8.3

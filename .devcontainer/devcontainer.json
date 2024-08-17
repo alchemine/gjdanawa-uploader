@@ -1,10 +1,10 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-dockerfile
 {
-  "name": "Existing Dockerfile",
+  "name": "Existing Dockerfile.dev",
   "build": {
     "context": "..",
-    "dockerfile": "../Dockerfile"
+    "dockerfile": "../Dockerfile.dev"
   },
 
   // Configure tool-specific properties.
@@ -42,11 +42,11 @@
 
   "mounts": ["source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind"],
   "workspaceMount": "source=${localWorkspaceFolder},target=/app,type=bind",
-  "workspaceFolder": "/app",
+  // "workspaceFolder": "/app",
 
-  "containerEnv": {
-    "PYTHONPATH": "/app"
-  },
+  // "containerEnv": {
+  //   "PYTHONPATH": "/app"
+  // },
   "runArgs": ["--env-file", ".env"],
   "postCreateCommand": "bash .devcontainer/postCreate.sh"
 

@@ -1,4 +1,4 @@
-"""Generic file handling functions."""
+"""Generic file loading functions."""
 
 from os.path import isfile, isdir
 from glob import glob
