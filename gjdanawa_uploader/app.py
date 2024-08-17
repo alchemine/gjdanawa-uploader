@@ -211,34 +211,34 @@ def main():
             "비밀번호", value=st.session_state.password, type="password"
         )
 
-        if st.session_state.id and st.session_state.password:
-            pass
-        elif id_value and pw_value:
-            with st.spinner("로그인 중..."):
-                try:
-                    try:
-                        driver = get_driver()
-                    except Exception as e:
-                        print(e)
-                        driver = get_chrome_driver()
+        # if st.session_state.id and st.session_state.password:
+        #     pass
+        # elif id_value and pw_value:
+        #     with st.spinner("로그인 중..."):
+        #         try:
+        #             try:
+        #                 driver = get_driver()
+        #             except Exception as e:
+        #                 print(e)
+        #                 driver = get_chrome_driver()
 
-                    url = "https://gjdanawa.com"
-                    load_url(driver, url)
+        #             url = "https://gjdanawa.com"
+        #             load_url(driver, url)
 
-                    id_selector = "#member_id"
-                    send_keys(driver, id_selector, id_value)
+        #             id_selector = "#member_id"
+        #             send_keys(driver, id_selector, id_value)
 
-                    pw_selector = "#pass"
-                    send_keys(driver, pw_selector, pw_value, enter=True)
-                    click_alert(driver, action="accept")
-                    st.session_state.driver = driver
-                    st.session_state.id = id_value
-                    st.session_state.password = pw_value
-                except:
-                    st.error("로그인에 실패했습니다. 다시 시도해주세요.")
-                    st.stop()
-        else:
-            st.stop()
+        #             pw_selector = "#pass"
+        #             send_keys(driver, pw_selector, pw_value, enter=True)
+        #             click_alert(driver, action="accept")
+        #             st.session_state.driver = driver
+        #             st.session_state.id = id_value
+        #             st.session_state.password = pw_value
+        #         except:
+        #             st.error("로그인에 실패했습니다. 다시 시도해주세요.")
+        #             st.stop()
+        # else:
+        #     st.stop()
         st.success("로그인 성공!")
 
     # 매물 정보 입력
