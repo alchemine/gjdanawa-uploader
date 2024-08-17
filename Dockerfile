@@ -35,5 +35,5 @@ COPY . .
 # Install dependencies
 RUN poetry install
 
-# Open FastAPI server
-ENTRYPOINT [ "sleep", "infinity" ]
+# Open Streamlit server
+ENTRYPOINT [ "poetry", "run", "streamlit", "run", "gjdanawa_uploader/app.py" ]
