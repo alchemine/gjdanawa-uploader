@@ -1,36 +1,16 @@
-from os.path import dirname, abspath
-import sys
-
-root_path = dirname(dirname(abspath(__file__)))
-sys.path.append(root_path)
-
-
 import streamlit as st
 import pandas as pd
-
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.os_manager import ChromeType
 
 from gjdanawa_uploader.utils.crawling import *
 
 
-@st.cache_resource
-def get_driver():
-    options = Options()
-    options.add_argument("--disable-gpu")
-    options.add_argument("--headless")
-    return webdriver.Chrome(
-        service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()),
-        options=options,
-    )
+STATE = st.session_state
 
 
 def initialize_session():
-    st.session_state.id = ""
-    st.session_state.password = ""
+    STATE.id = ""
+    STATE.password = ""
+    STATE.driver = get_chrome_driver()
 
 
 def create_property_input(key):
@@ -206,34 +186,24 @@ def main():
     # 로그인 정보 (사이드바)
     with st.sidebar:
         st.header("로그인 정보")
-        id_value = st.text_input("아이디", value=st.session_state.id)
-        pw_value = st.text_input(
-            "비밀번호", value=st.session_state.password, type="password"
-        )
+        id_value = st.text_input("아이디", value=STATE.id)
+        pw_value = st.text_input("비밀번호", value=STATE.password, type="password")
 
-        if st.session_state.id and st.session_state.password:
+        if STATE.id and STATE.password:
             pass
         elif id_value and pw_value:
             with st.spinner("로그인 중..."):
                 try:
-                    try:
-                        driver = get_chrome_driver()
-                    except Exception as e:
-                        st.error(f"드라이버 로드 1 실패\n{e}")
-                        driver = get_driver()
-
                     url = "https://gjdanawa.com"
-                    load_url(driver, url)
+                    load_url(STATE.driver, url)
 
                     id_selector = "#member_id"
-                    send_keys(driver, id_selector, id_value)
+                    send_keys(STATE.driver, id_selector, id_value)
 
                     pw_selector = "#pass"
-                    send_keys(driver, pw_selector, pw_value, enter=True)
-                    click_alert(driver, action="accept")
-                    st.session_state.driver = driver
-                    st.session_state.id = id_value
-                    st.session_state.password = pw_value
+                    send_keys(STATE.driver, pw_selector, pw_value, enter=True)
+                    click_alert(STATE.driver, action="accept")
+                    STATE.id, STATE.password = id_value, pw_value
                 except:
                     st.error("로그인에 실패했습니다. 다시 시도해주세요.")
                     st.stop()
@@ -244,13 +214,13 @@ def main():
     # 매물 정보 입력
     st.header("매물 정보")
 
-    if "property_count" not in st.session_state:
-        st.session_state.property_count = 1
+    if "property_count" not in STATE:
+        STATE.property_count = 1
 
     properties = []
 
     # 각 매물에 대한 탭 생성
-    tabs = st.tabs([f"매물 {i+1}" for i in range(st.session_state.property_count)])
+    tabs = st.tabs([f"매물 {i+1}" for i in range(STATE.property_count)])
 
     for i, tab in enumerate(tabs):
         with tab:
@@ -258,7 +228,7 @@ def main():
             properties.append(property_data)
 
     if st.button("매물 추가"):
-        st.session_state.property_count += 1
+        STATE.property_count += 1
         st.rerun()
 
     # 제출 버튼
@@ -272,8 +242,8 @@ def main():
         st.dataframe(df)
 
 
-if "initialize_session" not in st.session_state:
-    st.session_state.initialize_session = initialize_session()
+if "initialize_session" not in STATE:
+    STATE.initialize_session = initialize_session()
 
 
 if __name__ == "__main__":
