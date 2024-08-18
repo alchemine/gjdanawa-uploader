@@ -1,3 +1,5 @@
+# https://gjdanawa.com/modify.php?gubun=2&gubun2=1&num=1626858&id=
+
 import streamlit as st
 import pandas as pd
 
@@ -7,26 +9,41 @@ from gjdanawa_uploader.utils.crawling import *
 STATE = st.session_state
 
 
+# def initialize_session():
+#     STATE.id = ""
+#     STATE.password = ""
+#     STATE.driver = get_chrome_driver()
+
+
 def initialize_session():
-    STATE.id = ""
-    STATE.password = ""
+    STATE.id = "ans5454"
+    STATE.password = "tkajszld@94"
     STATE.driver = get_chrome_driver()
 
 
+def h(text: str, level: int = 5):
+    return f"{'#' * level} {text}"
+
+
 def create_property_input(key):
-    with st.container():
+    # 매물 정보 입력
+    st.subheader("매물 정보")
+
+    with st.container(border=True):
         col1, col2 = st.columns(2)
+        with col1:
+            title = st.text_input(
+                h("매물명"), value="고현🏠시장인근주택매매", key=f"title_{key}"
+            )
+        with col2:
+            main_view = st.checkbox(
+                f"""{h("메인매물 노출")}
+                \n※ 메인노출시 체크해주세요""",
+                key=f"view_{key}",
+            )
 
-    with col1:
-        title = st.text_input(
-            "매물명", value="고현🏠시장인근주택매매", key=f"title_{key}"
-        )
-    with col2:
-        main_view = st.checkbox(
-            "메인매물 노출 (※ 메인노출시 체크해주세요)", key=f"view_{key}"
-        )
-
-    with st.container():
+    with st.container(border=True):
+        st.write(h("카테고리"))
         col1, col2, col3, col4 = st.columns(4)
         with col1:
             category1 = st.selectbox(
@@ -45,20 +62,21 @@ def create_property_input(key):
                 "매매", options=["매매", "전세", "월세"], key=f"type_{key}"
             )
 
-    with st.container():
+    with st.container(border=True):
+        st.write(h("소재지"))
         col1, col2, col3 = st.columns(3)
         with col1:
-            si = st.selectbox("시", options=["경남"], key=f"si_{key}")
+            si = st.selectbox("지역", options=["경남"], key=f"si_{key}")
         with col2:
             gu = st.selectbox("구", options=["거제시"], key=f"gu_{key}")
         with col3:
             addr = st.selectbox("동", options=["고현동"], key=f"addr_{key}")
 
-    with st.container():
+    with st.container(border=True):
         col1, col2, col3 = st.columns(3)
         with col1:
             area = st.number_input(
-                "면적(㎡)", value=224.00, format="%.2f", key=f"area_{key}"
+                "면적 (단위: ㎡)", value=224.00, format="%.2f", key=f"area_{key}"
             )
 
         with col2:
@@ -70,10 +88,10 @@ def create_property_input(key):
                 "거래형태", options=["매매"], key=f"contract_type_{key}"
             )
 
-    with st.container():
+    with st.container(border=True):
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            dong = st.number_input("해당동 (단위: 동)", value=1, key=f"dong_{key}")
+            dong = st.text_input("해당동 (단위: 동)", value=1, key=f"dong_{key}")
         with col2:
             total_floor = st.number_input(
                 "총층수 (단위: 층)",
@@ -84,14 +102,14 @@ def create_property_input(key):
             )
         with col3:
             direction = st.selectbox(
-                "방향(거실기준)", options=["남향"], key=f"direction_{key}"
+                "방향 (거실기준)", options=["남향"], key=f"direction_{key}"
             )
         with col4:
             floor_type = st.selectbox(
                 "해당층수", options=["저층"], key=f"floor_type_{key}"
             )
 
-    with st.container():
+    with st.container(border=True):
         col1, col2, col3, col4 = st.columns(4)
 
         with col1:
@@ -123,7 +141,7 @@ def create_property_input(key):
                 key=f"elevator_parking_{key}",
             )
 
-    with st.container():
+    with st.container(border=True):
         col1, col2 = st.columns(2)
 
         with col1:
@@ -135,23 +153,71 @@ def create_property_input(key):
                 "사용승인일", value="1995", key=f"approval_date_{key}"
             )
 
-    with st.container():
+    with st.container(border=True):
         col1, col2 = st.columns(2)
-
         with col1:
             management_fee = st.number_input(
                 "관리비10만이상 (단위: 만원)", value=0, key=f"management_fee_{key}"
             )
         with col2:
+            price_by_type = st.text_input("항목별 금액", key=f"price_by_type_{key}")
+
+    with st.container(border=True):
+        col1, col2 = st.columns(2)
+        with col1:
             management_fee_under_10 = st.number_input(
                 "관리비10만미만 (단위: 만원)",
                 value=0,
                 key=f"management_fee_under_10_{key}",
             )
+        with col2:
+            description = st.text_input("항목만", key=f"description_{key}")
 
-    price_by_type = st.text_input("항목별 금액", key=f"price_by_type_{key}")
-    description = st.text_input("항목만", key=f"description_{key}")
-    id = st.text_input("매물고유번호", value="5454-20240817-000001", key=f"id_{key}")
+    st.subheader("가격/딜러정보")
+
+    with st.container(border=True):
+        col1, col2 = st.columns(2)
+        with col1:
+            price = st.number_input(
+                "매매가 (단위: 만원)", value=30000, key=f"price_{key}"
+            )
+        with col2:
+            price_type = st.radio(
+                "매물 상태",
+                ["판매/계약완료", "매물 진행중", "매물 감추기"],
+                key=f"price_type_{key}",
+            )
+
+    with st.container(border=True):
+        col1, col2, col3 = st.columns(3)
+        col4, col5, col6 = st.columns(3)
+        with col1:
+            broker = st.text_input(
+                "중개업소명", value="개룡공인중개사", key=f"broker_{key}"
+            )
+        with col2:
+            register_id = st.text_input(
+                "등록번호",
+                value="48310-2022-00010",
+                key=f"register_id_{key}",
+            )
+        with col3:
+            detailed_address = st.text_input(
+                "소재지",
+                value="경상남도 거제시 고현로4길 35 2층 4호",
+                key=f"detailed_address_{key}",
+            )
+        with col4:
+            broker_name = st.text_input(
+                "성명", value="성현우", key=f"broker_name_{key}"
+            )
+        with col5:
+            mobile = st.text_input("휴대폰", value="010-4906-2011", key=f"mobile_{key}")
+        with col6:
+            phone = st.text_input("전화번호", value="055-635-8882", key=f"phone_{key}")
+        link1 = st.text_input("링크정보1", key=f"link1_{key}")
+        link2 = st.text_input("링크정보2", key=f"link2_{key}")
+        link3 = st.text_input("링크정보3", key=f"link3_{key}")
 
     return {
         "카테고리": f"{category1} > {category2} > {category3}",
@@ -176,7 +242,17 @@ def create_property_input(key):
         "항목별 금액": price_by_type,
         "관리비10만미만": management_fee_under_10,
         "항목만": description,
-        "매물고유번호": id,
+        "가격 유형": price_type,
+        "매매가": price,
+        "중개업소명": broker,
+        "성명": broker_name,
+        "전화번호": phone,
+        "휴대폰": mobile,
+        "소재지": detailed_address,
+        "등록번호": register_id,
+        "링크정보1": link1,
+        "링크정보2": link2,
+        "링크정보3": link3,
     }
 
 
@@ -211,9 +287,6 @@ def main():
             st.stop()
         st.success("로그인 성공!")
 
-    # 매물 정보 입력
-    st.header("매물 정보")
-
     if "property_count" not in STATE:
         STATE.property_count = 1
 
@@ -233,13 +306,14 @@ def main():
 
     # 제출 버튼
     if st.button("제출"):
-        st.success("매물 정보가 성공적으로 제출되었습니다!")
-        st.write("제출된 데이터:")
-        st.json(properties)
+        with st.spinner("데이터를 처리 중입니다..."):
+            st.success("매물 정보가 성공적으로 제출되었습니다!")
+            st.write("제출된 데이터:")
+            st.json(properties)
 
-        # DataFrame으로 표시
-        df = pd.DataFrame(properties)
-        st.dataframe(df)
+            # DataFrame으로 표시
+            df = pd.DataFrame(properties)
+            st.dataframe(df)
 
 
 if "initialize_session" not in STATE:
